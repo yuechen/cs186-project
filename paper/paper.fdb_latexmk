@@ -1,0 +1,10 @@
+# Fdb version 3
+["pdflatex"] 1430686549 "paper.tex" "paper.pdf" "paper" 1430686550
+  "/usr/local/texlive/2014/texmf-dist/tex/latex/base/article.cls" 1399675188 20496 66dd832c447553f6776fbeac03bb0580 ""
+  "/usr/local/texlive/2014/texmf-dist/tex/latex/base/size10.clo" 1399675188 8967 546f1b177fd18efd7ad74d77a7bdac64 ""
+  "paper.aux" 1430686550 8 a94a2480d3289e625eea47cd1b285758 ""
+  "paper.tex" 1430686548 181 51ce96e0fecc0aa60b9aa1dd38cff1a1 ""
+  (generated)
+  "paper.log"
+  "paper.pdf"
+  "paper.aux"
