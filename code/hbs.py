@@ -41,5 +41,3 @@ def hbs(nrounds = 4, ncourses = 320, nstudents = 6000):
 		ids_priorities = list(reversed(ids_priorities))
 
 	return (courses, students)
-
-pprint(hbs())

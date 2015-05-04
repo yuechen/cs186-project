@@ -34,5 +34,3 @@ def rds(ncourses = 320, nstudents = 6000):
 	students = sorted(students, key = attrgetter('ID'))
 
 	return (courses, students)
-
-pprint(rds())
