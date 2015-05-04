@@ -50,6 +50,10 @@ class Course:
 	preference = None
 	num_assigned = 0
 
+	# for specific mechanisms
+	assigned = []
+	requests = []
+
 	def __repr__(self):
 		return "ID: " + str(self.ID) + ", Cap: " + str(self.cap) + ", Desirability: " + str(self.desirability) + ", Enrollment: " + str(self.num_assigned)
 
@@ -67,6 +71,11 @@ class Student:
 	preference = None
 	assigned = None
 	threshold = None
+
+	# for specific mechanisms
+	num_assigned = 0
+	requests = []
+	next = 0
 
 	def __repr__(self):
 		return "ID: " + str(self.ID) + ", Preference: " + str(self.preference) + ", Assigned: " + str(self.assigned) + ", Threshold: " + str(self.threshold)
