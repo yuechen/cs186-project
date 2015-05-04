@@ -48,10 +48,10 @@ class Course:
 	cap = None
 	desirability = None
 	preference = None
-	enrollment = 0
+	num_assigned = 0
 
 	def __repr__(self):
-		return "ID: " + str(self.ID) + ", Cap: " + str(self.cap) + ", Desirability: " + str(self.desirability) + ", Enrollment: " + str(self.enrollment)
+		return "ID: " + str(self.ID) + ", Cap: " + str(self.cap) + ", Desirability: " + str(self.desirability) + ", Enrollment: " + str(self.num_assigned)
 
 class Student:
 	'''

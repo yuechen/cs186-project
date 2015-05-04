@@ -33,9 +33,9 @@ def hbs(nrounds = 4, ncourses = 320, nstudents = 6000):
 			while(len(preferences[ID]) > 0):
 				course_ID = preferences[ID].pop(0)
 				course = courses[course_ID]
-				if (course.enrollment < course.cap) and (not has_conflict(course_ID, s.assigned)):
+				if (course.num_assigned < course.cap) and (not has_conflict(course_ID, s.assigned)):
 					s.assigned.append(course_ID)
-					course.enrollment += 1
+					course.num_assigned += 1
 					break
 
 		ids_priorities = list(reversed(ids_priorities))
