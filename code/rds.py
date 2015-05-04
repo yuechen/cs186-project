@@ -15,8 +15,9 @@ import numpy as np
 from pprint import pprint
 from random import shuffle
 
-def rds(ncourses = 320, nstudents = 6000):
-	courses, students = generate(ncourses, nstudents)
+def rds(courses, students):
+	ncourses = courses
+	nstudents = students
 
 	shuffle(students)
 
@@ -32,5 +33,3 @@ def rds(ncourses = 320, nstudents = 6000):
 				course.num_assigned += 1
 
 	students = sorted(students, key = attrgetter('ID'))
-
-	return (courses, students)

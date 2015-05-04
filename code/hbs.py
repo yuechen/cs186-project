@@ -14,8 +14,9 @@ from operator import itemgetter
 import numpy as np
 from pprint import pprint
 
-def hbs(nrounds = 4, ncourses = 320, nstudents = 6000):
-	courses, students = generate(ncourses, nstudents)
+def hbs(courses, students, nrounds = 4):
+	ncourses = len(courses)
+	nstudents = len(students)
 
 	student_priorities = np.random.uniform(0, 1, nstudents)
 	ids_priorities = zip(range(nstudents), student_priorities)
@@ -39,5 +40,3 @@ def hbs(nrounds = 4, ncourses = 320, nstudents = 6000):
 					break
 
 		ids_priorities = list(reversed(ids_priorities))
-
-	return (courses, students)
