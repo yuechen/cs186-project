@@ -48,9 +48,10 @@ class Course:
 	cap = None
 	desirability = None
 	preference = None
+	enrollment = 0
 
 	def __repr__(self):
-		return "ID: " + str(self.ID) + ", Cap: " + str(self.cap) + ", Desirability: " + str(self.desirability) + ", Preference: " + str(self.preference)
+		return "ID: " + str(self.ID) + ", Cap: " + str(self.cap) + ", Desirability: " + str(self.desirability) + ", Enrollment: " + str(self.enrollment)
 
 class Student:
 	'''
@@ -59,10 +60,8 @@ class Student:
 	ID 			= 	the unique ID (int) for this student, indexed from 0
 	preference 	= 	a list of course IDs, ordered by preference
 	assigned 	= 	a list of course IDs, pecifies courses assigned to student
-	threshold 	= 	the position in the preference list that states the LAST 
-					course the student would want. After the course in this
-					position, the student would rather go for non-lotteried
-					courses.
+	threshold 	= 	the number of lotteried courses that the student actually want 
+					(students can go for non-loterried courses)
 	'''
 	ID = None
 	preference = None
@@ -90,7 +89,18 @@ def rand_threshold():
 	else:
 		return threshold
 
-def generate(ncourses = 120, nstudents = 6000):
+def has_conflict(course, others, ncourses = 320, ndivisions = 8):
+	'''Make sure that ndivisions is a divisor of 120'''
+
+	group_size = ncourses / ndivisions
+
+	for c_other in others:
+		if c_other / group_size == course / group_size:
+			return True
+
+	return False
+
+def generate(ncourses = 320, nstudents = 6000):
 	courses = []
 	students = []
 
@@ -107,6 +117,7 @@ def generate(ncourses = 120, nstudents = 6000):
 		s = Student()
 		s.ID = ID
 		s.threshold = rand_threshold()
+		s.assigned = []
 
 		course_ids = list(range(ncourses))
 		probs = [c.desirability for c in courses]
