@@ -15,7 +15,7 @@ import numpy as np
 from pprint import pprint
 from random import shuffle
 
-def rds(courses, students):
+def rds(courses, students, combinatorial = False):
 	ncourses = courses
 	nstudents = students
 
@@ -28,8 +28,9 @@ def rds(courses, students):
 
 			course = courses[course_ID]
 
-			if (course.num_assigned < course.cap) and (not has_conflict(course_ID, s.assigned)):
-				s.assigned.append(course_ID)
-				course.num_assigned += 1
+			if course.num_assigned < course.cap:
+				if (combinatorial and (not has_conflict(course_ID, s.assigned))) or not combinatorial:
+					s.assigned.append(course_ID)
+					course.num_assigned += 1
 
 	students = sorted(students, key = attrgetter('ID'))
