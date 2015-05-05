@@ -119,6 +119,7 @@ def generate(ncourses = 320, nstudents = 6000):
 		c.cap = rand_cap()
 		c.desirability = np.random.uniform(0,1,1)[0]
 		c.preference = range(nstudents)
+		c.assigned = []
 		shuffle(c.preference)
 		courses.append(c)
 
