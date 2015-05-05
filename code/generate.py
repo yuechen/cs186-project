@@ -76,6 +76,8 @@ class Student:
 	num_assigned = 0
 	requests = []
 	next = 0
+	groups_filled = []
+	already_requested = []
 
 	def __repr__(self):
 		return "ID: " + str(self.ID) + ", Preference: " + str(self.preference) + ", Assigned: " + str(self.assigned) + ", Threshold: " + str(self.threshold)

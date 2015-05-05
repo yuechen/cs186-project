@@ -33,21 +33,28 @@ hbs_students = deepcopy(students)
 print "Running HBS Mechanism..."
 hbs(hbs_courses, hbs_students)
 
+# DA Mechanism, Non-Combinatorial
+print "Copying simulation data for DA Non-Combinatorial Simulation..."
+da_courses = deepcopy(courses)
+da_students = deepcopy(students)
+print "Running DA Non-Combinatorial Simulation..."
+deferred(da_courses, da_students)
+
+# DA Mechanism, Non-Combinatorial
+print "Copying simulation data for DA Combinatorial Simulation..."
+da_combo_courses = deepcopy(courses)
+da_combo_students = deepcopy(students)
+print "Running DA Combinatorial Simulation..."
+deferred(da_combo_courses, da_combo_students, combinatorial = True)
+
 # Calculate Metrics
-mechanisms = ["RDS", "HBS"]
-
-# percent of students matched with at least one course
-rds_one_course = float(sum([1 if len(s.assigned) > 0 else 0 for s in rds_students])) / float(len(students))
-hbs_one_course = sum([1 if len(s.assigned) > 0 else 0 for s in hbs_students]) / float(len(students))
-
-df = DataFrame.from_dict({'mechanism': mechanisms, 'pct_students': [rds_one_course, hbs_one_course]})
-print ggplot(df, aes(x = 'mechanism', y = 'pct_students')) + \
-	geom_bar(stat = 'identity') + theme_bw() + \
-	ggtitle("% Students Matched With >= 1 Course\n") + xlab("\nMechanism") + ylab("% of Students\n")
+mechanisms = ["RDS", "HBS", "DA", "DA Combinatorial"]
 
 # percent of students who receive first choice course
 rds_first_choice = float(sum([1 if len(s.assigned) > 0 and s.assigned[0] == s.preference[0] else 0 for s in rds_students])) / float(len(students))
 hbs_first_choice = float(sum([1 if len(s.assigned) > 0 and s.assigned[0] == s.preference[0] else 0 for s in hbs_students])) / float(len(students))
+da_first_choice = float(sum([1 if len(s.assigned) > 0 and s.assigned[0] == s.preference[0] else 0 for s in da_students])) / float(len(students))
+da_combo_first_choice = float(sum([1 if len(s.assigned) > 0 and s.assigned[0] == s.preference[0] else 0 for s in da_combo_students])) / float(len(students))
 
 df = DataFrame.from_dict({'mechanism': mechanisms, 'pct_students': [rds_first_choice, hbs_first_choice]})
 print ggplot(df, aes(x = 'mechanism', y = 'pct_students')) + \
