@@ -35,6 +35,8 @@ def swap_course(student, new_course, old_course):
 
 # has to make the student better off AND not conflict with other blocks
 def swappable(student, new_course, old_course, combinatorial):
+	if new_course.ID in student.assigned:
+		return False
 	if new_course.ID not in student.preference:
 		new_rank = 10000 # undesirable
 	else:
