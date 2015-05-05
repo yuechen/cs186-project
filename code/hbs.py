@@ -13,6 +13,7 @@ from generate import Course, Student, generate, has_conflict
 from operator import itemgetter
 import numpy as np
 from pprint import pprint
+from copy import deepcopy
 
 def hbs(courses, students, nrounds = 4):
 	ncourses = len(courses)
@@ -22,7 +23,7 @@ def hbs(courses, students, nrounds = 4):
 	ids_priorities = zip(range(nstudents), student_priorities)
 	ids_priorities = sorted(ids_priorities, key = itemgetter(1))
 
-	preferences = [s.preference for s in students]
+	preferences = [deepcopy(s.preference) for s in students]
 
 	for r in range(nrounds):
 		for (ID, priority) in ids_priorities:
