@@ -15,7 +15,7 @@ import numpy as np
 from pprint import pprint
 from copy import deepcopy
 
-NUM_CLASSES = 4
+# NUM_CLASSES = 3
 NUM_BLOCKS = 8
 BLOCK_SIZE = 0
 NUM_SWAPS = 0
@@ -107,6 +107,7 @@ def trading_cycle(course_dict, student_dict, combinatorial, num_rounds = 5):
 					swapped = obtain_course(student, course_id, student_dict, course_dict, combinatorial)
 					# stop searching for matching pair if course acquired or swapped
 					if swapped:
+						# print "ey", course_id, student.ID
 						break
 		print "=== ROUND", i, "===" 
 		print "number of trades:", NUM_SWAPS
@@ -132,11 +133,12 @@ def drop_courses(course_dict, student_dict):
 
 def trading_cycle_matching(course_dict, student_dict, combinatorial = False):
 	global BLOCK_SIZE
-	BLOCK_SIZE = len(student_dict) / NUM_BLOCKS
+	BLOCK_SIZE = len(course_dict) / NUM_BLOCKS
 	# allocate courses randomly (with non-overlap category req)
 	for student in student_dict:
 		blocks = set()
-		while student.num_assigned < NUM_CLASSES:
+		num_classes = random.randint(0, 4)
+		while student.num_assigned < num_classes:
 			course = random.choice(course_dict)
 			# print course.ID
 			block_overlap = combinatorial and course.ID / BLOCK_SIZE in blocks
@@ -147,7 +149,9 @@ def trading_cycle_matching(course_dict, student_dict, combinatorial = False):
 				course.assigned.append((rank, student.ID))
 				course.num_assigned += 1
 				student.num_assigned += 1
+			# print student.ID
 	# run trading cycle
+	print "start matching"
 	trading_cycle(course_dict, student_dict, combinatorial)
 	print "=== ROUNDS COMPLETE ==="
 	# drop courses not within student preference threshold
@@ -156,7 +160,7 @@ def trading_cycle_matching(course_dict, student_dict, combinatorial = False):
 
 def main():
 	print "Generating simulation data..."
-	courses, students = generate(ncourses = 200, nstudents = 1000)
+	courses, students = generate(ncourses = 120, nstudents = 1500)
 	trading_cycle_matching(courses, students)
 
 if __name__ == "__main__":
