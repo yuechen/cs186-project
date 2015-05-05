@@ -15,23 +15,29 @@ import numpy as np
 from pprint import pprint
 from copy import deepcopy
 
-# NUM_CLASSES = 3
+MAX_CLASSES = 4
 NUM_BLOCKS = 8
 BLOCK_SIZE = 0
 NUM_SWAPS = 0
 NUM_GRABS = 0
 
+def add_course(student, course):
+	student.assigned.append(course.ID)
+	rank = course.preference.index(student.ID)
+	course.assigned.append((rank, student.ID))
+	course.num_assigned += 1
+	student.num_assigned += 1
+
+def remove_course(student, course):
+	student.assigned.remove(course.ID)
+	rank = course.preference.index(student.ID)
+	course.assigned.remove((rank, student.ID))
+	course.num_assigned -= 1
+	student.num_assigned -= 1
+
 def swap_course(student, new_course, old_course):
-	# add course
-	student.assigned.append(new_course.ID)
-	new_rank = new_course.preference.index(student.ID)
-	new_course.assigned.append((new_rank, student.ID))
-	new_course.num_assigned += 1
-	# remove course
-	student.assigned.remove(old_course.ID)
-	old_rank = old_course.preference.index(student.ID)
-	old_course.assigned.remove((old_rank, student.ID))
-	old_course.num_assigned -= 1
+	add_course(student, new_course)
+	remove_course(student, old_course)
 
 # has to make the student better off AND not conflict with other blocks
 def swappable(student, new_course, old_course, combinatorial):
@@ -76,12 +82,17 @@ def obtain_course(student, course_id, student_dict, course_dict, combinatorial):
 	target_course = course_dict[course_id]
 	# no trade necessary (enough room)
 	if target_course.num_assigned < target_course.cap:
-		for trade_id in student.assigned:
-			to_trade = course_dict[trade_id]
-			if swappable(student, target_course, to_trade, combinatorial):
-				swap_course(student, target_course, to_trade)
-				NUM_GRABS += 1
-				return True
+		if student.num_assigned < MAX_CLASSES:
+			add_course(student, target_course)
+			NUM_GRABS += 1
+			return True
+		else:
+			for trade_id in student.assigned:
+				to_trade = course_dict[trade_id]
+				if swappable(student, target_course, to_trade, combinatorial):
+					swap_course(student, target_course, to_trade)
+					NUM_GRABS += 1
+					return True
 		return False
 	# trade necessary
 	else:
@@ -94,15 +105,11 @@ def obtain_course(student, course_id, student_dict, course_dict, combinatorial):
 # student.next = next index in the PREFERENCE list (not next course id)
 def trading_cycle(course_dict, student_dict, combinatorial, num_rounds = 6):
 	global NUM_SWAPS, NUM_GRABS
-	num_swaps = 0
-	# initialize target course to most preferred course
-	for student in student_dict:
-		student.next = 0
 	# start trading
 	for i in range(num_rounds):
 		# TODO: change this to random order?
 		for student in student_dict:
-			for course_id in range(len(course_dict)):
+			for course_id in student.preference:
 				if course_id not in student.assigned:
 					swapped = obtain_course(student, course_id, student_dict, course_dict, combinatorial)
 					# stop searching for matching pair if course acquired or swapped
@@ -112,8 +119,6 @@ def trading_cycle(course_dict, student_dict, combinatorial, num_rounds = 6):
 		print "=== ROUND", i, "===" 
 		print "number of trades:", NUM_SWAPS
 		print "number of classes acquired (no trade):", NUM_GRABS
-		if NUM_SWAPS == 0 and NUM_GRABS == 0:
-			break
 		NUM_SWAPS = 0
 		NUM_GRABS = 0
 
@@ -125,11 +130,7 @@ def drop_courses(course_dict, student_dict):
 			if course_id not in student.preference:
 				bad_ids.append(course_id)
 		for course_id in bad_ids:
-			student.assigned.remove(course_id)
-			course = course_dict[course_id]
-			rank = course.preference.index(student.ID)
-			course.assigned.remove((rank, student.ID))
-			course.num_assigned -= 1
+			remove_course(student, course_dict[course_id])
 			dropped_courses += 1
 	return dropped_courses
 
@@ -142,16 +143,10 @@ def trading_cycle_matching(course_dict, student_dict, combinatorial = False):
 		num_classes = random.randint(0, 4)
 		while student.num_assigned < num_classes:
 			course = random.choice(course_dict)
-			# print course.ID
 			block_overlap = combinatorial and course.ID / BLOCK_SIZE in blocks
 			if not block_overlap and course.ID not in student.assigned and course.num_assigned < course.cap:
 				blocks.add(course.ID / BLOCK_SIZE)
-				student.assigned.append(course.ID)
-				rank = course.preference.index(student.ID)
-				course.assigned.append((rank, student.ID))
-				course.num_assigned += 1
-				student.num_assigned += 1
-			# print student.ID
+				add_course(student, course)
 	# run trading cycle
 	print "start matching"
 	trading_cycle(course_dict, student_dict, combinatorial)
@@ -165,8 +160,17 @@ def main():
 	courses, students = generate(ncourses = 120, nstudents = 1500)
 	trading_cycle_matching(courses, students)
 
+	# num_bugs = 0
 	# for student in students:
-	# 	print student.ID, student.assigned, student.preference
-	
+	# 	if student.num_assigned == 0:
+	# 		boolean = False
+	# 		for course_id in student.preference:
+	# 			if courses[course_id].cap > courses[course_id].num_assigned:
+	# 				boolean = True
+	# 		if boolean:
+	# 			num_bugs += 1
+	# # 	# print student.ID, student.assigned, student.preference
+	# print "argh", num_bugs
+
 if __name__ == "__main__":
 	main()
