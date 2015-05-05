@@ -1,3 +1,14 @@
+#################################################
+# CS 186 Final Project: Course Matching
+# Harvard University
+# 
+# Yuechen Zhao <yuechenzhao@college.harvard.edu>
+# Last Modified: May 3, 2015
+# 
+# Extracted the graphing code from metrics.py
+# to make graphs on the fly.
+#################################################
+
 from ggplot import *
 from pandas import DataFrame
 

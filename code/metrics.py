@@ -23,7 +23,7 @@ courses, students = generate()
 
 def bar_graph(df, title):
 	return ggplot(df, aes(x = 'mechanism', y = 'pct_students')) + \
-	geom_bar(stat = 'identity') + theme_bw() + \
+	geom_bar(stat = 'identity') + theme_bw() + theme(axis_text_x  = element_text(size = 10)) + \
 	ggtitle(title) + xlab("\nMechanism") + ylab("% of Students\n")
 
 def sublist(l, indicies):
@@ -35,7 +35,7 @@ si_students = []
 ncourses = len(courses)
 nstudents = len(students)
 
-mechanisms = ["RDS", "RDS Combinatorial", "HBS", "HBS Combinatorial", "DA RSP", "DA RSP Combinatorial", "DA TSP", "DA TSP Combinatorial", "Trading", "Trading Combinatorial"]
+mechanisms = ["RDS", "RDS (C)", "HBS", "HBS (C)", "DA (U)", "DA (U, C)", "DA (T)", "DA (T, C)", "Trade", "Trade (C)"]
 
 # RDS Mechanism
 print "Copying simulation data for RDS Simulation..."
@@ -92,7 +92,7 @@ si_courses.append(deepcopy(courses))
 si_students.append(deepcopy(students))
 print "Running DA TSP Combinatorial Simulation..."
 deferred(si_courses[7], si_students[7], tiered = True, combinatorial = True)
-'''
+
 # Trading Mechanism, Non-Combinatorial
 print "Copying simulation data for Trading Non-Combinatorial Simulation..."
 si_courses.append(deepcopy(courses))
@@ -106,7 +106,7 @@ si_courses.append(deepcopy(courses))
 si_students.append(deepcopy(students))
 print "Running Trading Combinatorial Simulation..."
 trading_cycle_matching(si_courses[9], si_students[9], combinatorial = True)
-'''
+
 # Percent of students matched with at least one course
 def pct_students_one_course(to_compare):
 	results = []
@@ -145,10 +145,14 @@ def avg_rank(to_compare):
 	df = DataFrame.from_dict({'mechanism': sublist(mechanisms, to_compare), 'pct_students': results})
 	return (results, bar_graph(df, "Average Rank of Student's Courses\n"))
 
-results, graph = pct_students_one_course(range(8))
+results, graph = pct_students_one_course(range(10))
 print results
 print graph
 
-results, graph = pct_students_first_choice(range(8))
+results, graph = pct_students_first_choice(range(10))
+print results
+print graph
+
+results, graph = avg_rank(range(10))
 print results
 print graph
