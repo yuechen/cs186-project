@@ -31,9 +31,9 @@ import random
 
 # assuming these dictionaries are global variables
 # (can alternately be passed around)
-COURSE_DICT = None
-STUDENT_DICT = None
-NUM_ROUNDS = 500
+# COURSE_DICT = None
+# STUDENT_DICT = None
+# NUM_ROUNDS = 500
 NUM_CLASSES = 4
 BLOCK_SIZE = 15
 
@@ -64,10 +64,10 @@ def swappable(student, new_course, old_course):
 
 # s1 wants course with id s1_target_id from s2
 # return TRUE if trade can occur, FALSE if not
-def execute_trade(s1, s2, s1_target_id):
+def execute_trade(s1, s2, s1_target_id, course_dict):
 	for course_id in s1.assigned:
-		s1_new_course = COURSE_DICT[s1_target_id]
-		s2_new_course = COURSE_DICT[course_id]
+		s1_new_course = course_dict[s1_target_id]
+		s2_new_course = course_dict[course_id]
 		# check if valid trade
 		if swappable(s1, s1_new_course, s2_new_course) and swappable(s2, s2_new_course, s1_new_course):
 			swap_course(s1, s1_new_course, s2_new_course)
@@ -76,46 +76,46 @@ def execute_trade(s1, s2, s1_target_id):
 	return False
 
 # course is not always obtained (valid swap may not exist)
-def obtain_course(student, course_id):
-	target_course = COURSE_DICT[course_id]
+def obtain_course(student, course_id, student_dict, course_dict):
+	target_course = course_dict[course_id]
 	# no trade necessary (enough room)
 	if target_course.num_assigned < target_course.cap:
 		for trade_id in student.assigned:
-			to_trade = COURSE_DICT[trade_id]
+			to_trade = course_dict[trade_id]
 			if swappable(student, target_course, to_trade):
 				swap_course(student, target_course, to_trade)
 				return
 	# trade necessary
 	else:
 		for _, other_id in target_course.assigned:
-			other_student = STUDENT_DICT[other_id]
-			if execute_trade(student, other_student, target_id):
+			other_student = student_dict[other_id]
+			if execute_trade(student, other_student, target_id, course_dict):
 				return
 
 # student.next = next index in the PREFERENCE list (not next course id)
-def trading_cycle():
+def trading_cycle(course_dict, student_dict, num_rounds = 100):
 	# initialize target course to most preferred course
-	for student in STUDENT_DICT.values():
+	for student in student_dict.values():
 		student.next = 0
 	# start trading
 	for i in range(NUM_ROUNDS):
 		# TODO: change this to random order?
-		for student in STUDENT_DICT.values():
+		for student in student_dict.values():
 			# find next available preference if already owned
 			while student.next in student.assigned:
 				student.next += 1
 			# continue only if target course is above threshold
 			if student.next < student.threshold:
 				course_id = student.preference[student.next]
-				obtain_course(student, course_id)
+				obtain_course(student, course_id, student_dict, course_dict)
 				student.next += 1
 
-def trading_cycle_matching(courses, student):
+def trading_cycle_matching(course_dict, student_dict):
 	# allocate courses randomly (with non-overlap category req)
-	for student in STUDENT_DICT.values():
+	for student in student_dict.values():
 		blocks = set()
 		while student.num_assigned < NUM_CLASSES:
-			course = COURSE_DICT[random.choice(COURSE_DICT.keys())]
+			course = course_dict[random.choice(course_dict.keys())]
 			if course.id / BLOCK_SIZE not in blocks and course.num_assigned < course.cap:
 				blocks.add(course.id / BLOCK_SIZE)
 				student.assigned.append(course.id)
@@ -124,4 +124,4 @@ def trading_cycle_matching(courses, student):
 				course.num_assigned += 1
 				student.num_assigned += 1
 	# run trading cycle
-	trading_cycle()
+	trading_cycle(course_dict, student_dict)
