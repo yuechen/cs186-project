@@ -100,8 +100,8 @@ def rand_threshold():
 	else:
 		return threshold
 
-def has_conflict(course, others, ncourses = 320, ndivisions = 8):
-	'''Make sure that ndivisions is a divisor of 120'''
+def has_conflict(course, others, ncourses = 120, ndivisions = 8):
+	'''Make sure that ndivisions is a divisor of ncourses'''
 
 	group_size = ncourses / ndivisions
 
@@ -111,7 +111,7 @@ def has_conflict(course, others, ncourses = 320, ndivisions = 8):
 
 	return False
 
-def generate(ncourses = 320, nstudents = 6000):
+def generate(ncourses = 120, nstudents = 1500):
 	courses = []
 	students = []
 

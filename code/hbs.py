@@ -15,7 +15,7 @@ import numpy as np
 from pprint import pprint
 from copy import deepcopy
 
-def hbs(courses, students, nrounds = 4):
+def hbs(courses, students, nrounds = 4, combinatorial = False):
 	ncourses = len(courses)
 	nstudents = len(students)
 
@@ -35,9 +35,10 @@ def hbs(courses, students, nrounds = 4):
 			while(len(preferences[ID]) > 0):
 				course_ID = preferences[ID].pop(0)
 				course = courses[course_ID]
-				if (course.num_assigned < course.cap) and (not has_conflict(course_ID, s.assigned)):
-					s.assigned.append(course_ID)
-					course.num_assigned += 1
-					break
+				if course.num_assigned < course.cap:
+					if (combinatorial and (not has_conflict(course_ID, s.assigned))) or not combinatorial:
+						s.assigned.append(course_ID)
+						course.num_assigned += 1
+						break
 
 		ids_priorities = list(reversed(ids_priorities))
