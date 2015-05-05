@@ -8,11 +8,12 @@ def deferred(courses, students, tiered = False, limit = 4, combinatorial = False
 			student.already_requested = []
 
 	while changes == True: 
-		send_requests(courses, students, limit = limit, combinatorial = combinatorial, ndivisions = ndivisions)
-		changes = review_requests(courses, students, combinatorial = combinatorial, tiered = tiered, ndivisions = ndivisions) 
+		changes = send_requests(courses, students, limit = limit, combinatorial = combinatorial, ndivisions = ndivisions)
+		review_requests(courses, students, combinatorial = combinatorial, tiered = tiered, ndivisions = ndivisions) 
 
 #students send requests to courses, s.t. if all requests accepted, they would each have filled courses up to limti 
 def send_requests(courses, students, limit = 4, combinatorial = False, ndivisions = 8):	
+	changes = False 
 	for student in students: 
 		space_left = limit - student.num_assigned 
 		if not combinatorial:
@@ -22,12 +23,13 @@ def send_requests(courses, students, limit = 4, combinatorial = False, ndivision
 					course_id = student.preference[student.next]
 					send_request(courses, student, course_id)
 					student.next += 1 
+					changes = True 
 		else:
 			to_request = []
 			request_groups = []
 			counter = 0 
 			#find most preferred courses not in currently possessed divisions to request 
-			while len(to_request) < space_left and len(student.preference) > counter:
+			while ((len(to_request) < space_left) and (len(student.preference) > counter)):
 				course_id = student.preference[counter]
 				request_group = group(course_id, len(courses), ndivisions)
 				if ((request_group not in student.groups_filled) and (request_group not in request_groups)):
@@ -39,10 +41,10 @@ def send_requests(courses, students, limit = 4, combinatorial = False, ndivision
 			#send requests to all those courses 
 			for course_id in to_request: 
 				send_request(courses, student, course_id)
+				changes = True 
 
 #courses review requests and send acceptances and denials 
 def review_requests(courses, students, combinatorial = False, tiered = False, ndivisions = 8):
-	changes = False 
 	for course in courses: 
 		for request in course.requests:
 			#if course not full, accept 
@@ -50,7 +52,6 @@ def review_requests(courses, students, combinatorial = False, tiered = False, nd
 				send_acceptance(courses, students, course, request, ndivisions, combinatorial)
 				accept_request(course, request)
 				course.num_assigned += 1 
-				changes = True 
 
 			#if course full and boot criterion is met 
 			#boot lowest preferred student in favor of requester
@@ -58,11 +59,10 @@ def review_requests(courses, students, combinatorial = False, tiered = False, nd
 				send_acceptance(courses, students, course, request, ndivisions, combinatorial)
 				send_rejection(courses, students, course, ndivisions, combinatorial)
 				accept_request(course, request)
-				changes = True 
 
 		#empty out requests
 		course.requests = []
-	return changes 
+
 
 #returns group that course is in, where in combinatorial version, no student wants two courses from same group 
 def group(course_id, ncourses, ndivisions):
