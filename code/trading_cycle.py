@@ -92,16 +92,14 @@ def obtain_course(student, course_id, student_dict, course_dict, combinatorial):
 		return False
 
 # student.next = next index in the PREFERENCE list (not next course id)
-def trading_cycle(course_dict, student_dict, combinatorial, num_rounds = 5):
+def trading_cycle(course_dict, student_dict, combinatorial, num_rounds = 6):
 	global NUM_SWAPS, NUM_GRABS
 	num_swaps = 0
 	# initialize target course to most preferred course
 	for student in student_dict:
 		student.next = 0
 	# start trading
-	i = 0
-	while True:
-	# for i in range(num_rounds):
+	for i in range(num_rounds):
 		# TODO: change this to random order?
 		for student in student_dict:
 			for course_id in range(len(course_dict)):
@@ -118,7 +116,6 @@ def trading_cycle(course_dict, student_dict, combinatorial, num_rounds = 5):
 			break
 		NUM_SWAPS = 0
 		NUM_GRABS = 0
-		i += 1
 
 def drop_courses(course_dict, student_dict):
 	dropped_courses = 0
@@ -169,9 +166,7 @@ def main():
 	trading_cycle_matching(courses, students)
 
 	# for student in students:
-	# 	for course in student.assigned:
-	# 		if course not in student.preference:
-	# 			print course, student.ID, student.assigned, student.preference
-
+	# 	print student.ID, student.assigned, student.preference
+	
 if __name__ == "__main__":
 	main()
