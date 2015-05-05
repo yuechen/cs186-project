@@ -123,14 +123,17 @@ def trading_cycle(course_dict, student_dict, combinatorial, num_rounds = 5):
 def drop_courses(course_dict, student_dict):
 	dropped_courses = 0
 	for student in student_dict:
+		bad_ids = []
 		for course_id in student.assigned:
 			if course_id not in student.preference:
-				student.assigned.remove(course_id)
-				course = course_dict[course_id]
-				rank = course.preference.index(student.ID)
-				course.assigned.remove((rank, student.ID))
-				course.num_assigned -= 1
-				dropped_courses += 1
+				bad_ids.append(course_id)
+		for course_id in bad_ids:
+			student.assigned.remove(course_id)
+			course = course_dict[course_id]
+			rank = course.preference.index(student.ID)
+			course.assigned.remove((rank, student.ID))
+			course.num_assigned -= 1
+			dropped_courses += 1
 	return dropped_courses
 
 def trading_cycle_matching(course_dict, student_dict, combinatorial = False):
@@ -164,6 +167,11 @@ def main():
 	print "Generating simulation data..."
 	courses, students = generate(ncourses = 120, nstudents = 1500)
 	trading_cycle_matching(courses, students)
+
+	# for student in students:
+	# 	for course in student.assigned:
+	# 		if course not in student.preference:
+	# 			print course, student.ID, student.assigned, student.preference
 
 if __name__ == "__main__":
 	main()
