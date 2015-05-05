@@ -142,7 +142,7 @@ def trading_cycle_matching(course_dict, student_dict, combinatorial = False):
 			course = random.choice(course_dict)
 			# print course.ID
 			block_overlap = combinatorial and course.ID / BLOCK_SIZE in blocks
-			if not block_overlap and course.num_assigned < course.cap:
+			if not block_overlap and course.ID not in student.assigned and course.num_assigned < course.cap:
 				blocks.add(course.ID / BLOCK_SIZE)
 				student.assigned.append(course.ID)
 				rank = course.preference.index(student.ID)
