@@ -16,7 +16,8 @@ from pprint import pprint
 from copy import deepcopy
 
 NUM_CLASSES = 4
-BLOCK_SIZE = 15
+NUM_BLOCKS = 8
+BLOCK_SIZE = 0
 NUM_SWAPS = 0
 NUM_GRABS = 0
 
@@ -130,6 +131,8 @@ def drop_courses(course_dict, student_dict):
 	return dropped_courses
 
 def trading_cycle_matching(course_dict, student_dict, combinatorial = False):
+	global BLOCK_SIZE
+	BLOCK_SIZE = len(student_dict) / NUM_BLOCKS
 	# allocate courses randomly (with non-overlap category req)
 	for student in student_dict:
 		blocks = set()
@@ -155,8 +158,6 @@ def main():
 	print "Generating simulation data..."
 	courses, students = generate(ncourses = 200, nstudents = 1000)
 	trading_cycle_matching(courses, students)
-	# print courses
-	# print students
 
 if __name__ == "__main__":
 	main()
