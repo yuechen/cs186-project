@@ -2,11 +2,6 @@
 def deferred(courses, students, tiered = False, limit = 4, combinatorial = False, ndivisions = 8):
 	changes = True 
 
-	if combinatorial: 
-		for student in students:
-			student.groups_filled = []
-			student.already_requested = []
-
 	while changes == True: 
 		changes = send_requests(courses, students, limit = limit, combinatorial = combinatorial, ndivisions = ndivisions)
 		review_requests(courses, students, combinatorial = combinatorial, tiered = tiered, ndivisions = ndivisions) 
@@ -42,6 +37,7 @@ def send_requests(courses, students, limit = 4, combinatorial = False, ndivision
 			for course_id in to_request: 
 				send_request(courses, student, course_id)
 				changes = True 
+	return changes 
 
 #courses review requests and send acceptances and denials 
 def review_requests(courses, students, combinatorial = False, tiered = False, ndivisions = 8):
