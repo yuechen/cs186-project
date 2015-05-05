@@ -10,8 +10,8 @@
 # and the second is a list of Course objects.
 #
 # The capacity for courses is distributed as a mixed
-# Normal distribution with .7 probability drawing
-# from X and .3 probability drawing from Y. 
+# Normal distribution with .85 probability drawing
+# from X and .15 probability drawing from Y. 
 # X ~ N(20, 5) and Y ~ N(100, 30)
 # All capacities are forced to be > 0. If any is
 # <= 0, then the capacity is redrawn from the
@@ -81,7 +81,7 @@ class Student:
 		return "ID: " + str(self.ID) + ", Preference: " + str(self.preference) + ", Assigned: " + str(self.assigned) + ", Threshold: " + str(self.threshold)
 
 def rand_cap():
-	if np.random.binomial(1, 0.7, 1) == 1:
+	if np.random.binomial(1, 0.85, 1) == 1:
 		cap = int(round(np.random.normal(20, 5, 1)[0]))
 	else:
 		cap = int(round(np.random.normal(100, 30, 1)[0]))
